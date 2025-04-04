@@ -85,6 +85,7 @@ exports.newUser = functions.auth.user().onCreate(async (user) => {
     //   poster: "poster url",
     //   postedBy: "user id",
     //   createdAt: "timestamp",
+    //   isApproved: true,
     // }
 }
 
