@@ -1,3 +1,4 @@
+// @ts-nocheck
 const functions = require("firebase-functions/v1");
 const admin = require("firebase-admin");
 
@@ -83,7 +84,7 @@ exports.newUser = functions.auth.user().onCreate(async (user) => {
   }
 });
 
-exports.subscribeToClub = functions.firestore
+exports.subscribeUnsubscribeToClub = functions.firestore
   .document("users/{userId}")
   .onUpdate(async (change, context) => {
     const before = change.before.data();
@@ -92,8 +93,11 @@ exports.subscribeToClub = functions.firestore
     if (before.clubAffiliation !== after.clubAffiliation) {
       const userId = context.params.userId;
       const clubIds = after.clubAffiliation;
+      const oldClubIds = before.clubAffiliation;
+      const newClubIds = clubIds.filter((clubId) => !oldClubIds.includes(clubId));
+      const removedClubIds = oldClubIds.filter((clubId) => !clubIds.includes(clubId));
 
-      for (const clubId of clubIds) {
+      for (const clubId of newClubIds) {
         var currentSubscribers = await admin
           .firestore()
           .collection("clubsCollection")
@@ -115,18 +119,7 @@ exports.subscribeToClub = functions.firestore
             }
           });
       }
-    }
-  });
-
-exports.unsubscribeFromClub = functions.firestore
-  .document("users/{userId}")
-  .onUpdate(async (change, context) => {
-    const before = change.before.data();
-    const after = change.after.data();
-
-    if (before.clubAffiliation !== after.clubAffiliation) {
-      const clubIds = after.clubAffiliation;
-      for (const clubId of clubIds) {
+      for (const clubId of removedClubIds) {
         var currentSubscribers = await admin
           .firestore()
           .collection("clubsCollection")
@@ -151,7 +144,10 @@ exports.unsubscribeFromClub = functions.firestore
     }
   });
 
-exports.registerForEvent = functions.firestore
+
+
+
+exports.registerUnregisterForEvent = functions.firestore
   .document("users/{userId}")
   .onUpdate(async (change, context) => {
     const before = change.before.data();
@@ -160,40 +156,65 @@ exports.registerForEvent = functions.firestore
     if (before.participation !== after.participation) {
       const userId = context.params.userId;
       const eventIds = after.participation;
-
-      for (const eventId of eventIds) {
-        await admin
+      const oldEventIds = before.participation;
+      const newEventIds = eventIds.filter((eventId) => !oldEventIds.includes(eventId));
+      const removedEventIds = oldEventIds.filter((eventId) => !eventIds.includes(eventId));
+      for (const eventId of newEventIds) {
+          var currentSubscribers = await admin
+            .firestore()
+            .collection("eventsCollection")
+            .doc(eventId)
+            .get().then((doc) => {
+              if (doc.exists) {
+                var participants = doc.data().participants;
+                participants.push(userId);
+                console.log("participants", participants);
+                admin
+                  .firestore()
+                  .collection("eventsCollection")
+                  .doc(eventId)
+                  .update({
+                    // @ts-ignore
+                    participants: participants,
+                  });
+              } else {
+                console.log("No such document!");
+                return 0;
+              }
+            });
+        
+      }
+      for (const eventId of removedEventIds) {
+        var currentSubscribers = await admin
           .firestore()
           .collection("eventsCollection")
           .doc(eventId)
-          .update({
-            participants: admin.firestore.FieldValue.arrayUnion(userId),
+          .get()
+          .then((doc) => {
+            if (doc.exists) {
+              var participants = doc.data().participants;
+              participants = participants.filter(
+                (participant) => participant !== userId
+              );
+              console.log("participants", participants);
+              admin
+                .firestore()
+                .collection("eventsCollection")
+                .doc(eventId)
+                .update({
+                  // @ts-ignore
+                  participants: participants,
+                });
+            } else {
+              console.log("No such document!");
+              return 0;
+            }
           });
       }
     }
   });
 
-exports.unregisterFromEvent = functions.firestore
-  .document("users/{userId}")
-  .onUpdate(async (change, context) => {
-    const before = change.before.data();
-    const after = change.after.data();
 
-    if (before.participation !== after.participation) {
-      const userId = context.params.userId;
-      const eventIds = before.participation;
-
-      for (const eventId of eventIds) {
-        await admin
-          .firestore()
-          .collection("eventsCollection")
-          .doc(eventId)
-          .update({
-            participants: admin.firestore.FieldValue.arrayRemove(userId),
-          });
-      }
-    }
-  });
 
 // event database schema
 {
