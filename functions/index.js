@@ -1,3 +1,4 @@
+// @ts-nocheck
 const functions = require("firebase-functions/v1");
 const admin = require("firebase-admin");
 
@@ -63,27 +64,27 @@ exports.newUser = functions.auth.user().onCreate(async user => {
 				});
 		}
 
-		admin
-			.firestore()
-			.collection("users")
-			.doc(user.uid)
-			.set({
-				email: user.email,
-				displayName: user.displayName,
-				uid: user.uid,
-				roles: ["student"], // student, admin, club-cordi, club-member, club-generalmember, etc.
-				clubAffiliation: [], // subscriptions to clubs
-				intrests: [], // intrests of the user if using that
-				participation: [], // events participating in
-				saved: [],
-			});
-	} else {
-		await admin.auth().deleteUser(user.uid);
-		console.log(`Deleted user ${user.uid} with email ${user.email}`);
-	}
+    admin
+      .firestore()
+      .collection("users")
+      .doc(user.uid)
+      .set({
+        email: user.email,
+        displayName: user.displayName,
+        uid: user.uid,
+        roles: ["student"], // student, admin, club-cordi, club-member, club-generalmember, etc.
+        clubAffiliation: [], // subscriptions to clubs
+        intrests: [], // intrests of the user if using that
+        participation: [], // events participating in
+        saved: [],
+      });
+  } else {
+    await admin.auth().deleteUser(user.uid);
+    console.log(`Deleted user ${user.uid} with email ${user.email}`);
+  }
 });
 
-exports.subscribeToClub = functions.firestore
+exports.subscribeUnsubscribeToClub = functions.firestore
   .document("users/{userId}")
   .onUpdate(async (change, context) => {
     const before = change.before.data();
@@ -92,84 +93,128 @@ exports.subscribeToClub = functions.firestore
     if (before.clubAffiliation !== after.clubAffiliation) {
       const userId = context.params.userId;
       const clubIds = after.clubAffiliation;
+      const oldClubIds = before.clubAffiliation;
+      const newClubIds = clubIds.filter((clubId) => !oldClubIds.includes(clubId));
+      const removedClubIds = oldClubIds.filter((clubId) => !clubIds.includes(clubId));
 
-      for (const clubId of clubIds) {
-        await admin
+      for (const clubId of newClubIds) {
+        var currentSubscribers = await admin
           .firestore()
           .collection("clubsCollection")
           .doc(clubId)
-          .update({
-            subscribers: admin.firestore.FieldValue.increment(1),
+          .get()
+          .then((doc) => {
+            if (doc.exists) {
+              admin
+                .firestore()
+                .collection("clubsCollection")
+                .doc(clubId)
+                .update({
+                  // @ts-ignore
+                  subscribers: doc.data().subscribers + 1,
+                });
+            } else {
+              console.log("No such document!");
+              return 0;
+            }
+          });
+      }
+      for (const clubId of removedClubIds) {
+        var currentSubscribers = await admin
+          .firestore()
+          .collection("clubsCollection")
+          .doc(clubId)
+          .get()
+          .then((doc) => {
+            if (doc.exists) {
+              admin
+                .firestore()
+                .collection("clubsCollection")
+                .doc(clubId)
+                .update({
+                  // @ts-ignore
+                  subscribers: doc.data().subscribers - 1,
+                });
+            } else {
+              console.log("No such document!");
+              return 0;
+            }
           });
       }
     }
   });
 
-exports.unsubscribeFromClub = functions.firestore
+
+
+
+exports.registerUnregisterForEvent = functions.firestore
   .document("users/{userId}")
   .onUpdate(async (change, context) => {
     const before = change.before.data();
     const after = change.after.data();
 
-    if (before.clubAffiliation !== after.clubAffiliation) {
+    if (before.participation !== after.participation) {
       const userId = context.params.userId;
-      const clubIds = before.clubAffiliation;
-
-      for (const clubId of clubIds) {
-        await admin
+      const eventIds = after.participation;
+      const oldEventIds = before.participation;
+      const newEventIds = eventIds.filter((eventId) => !oldEventIds.includes(eventId));
+      const removedEventIds = oldEventIds.filter((eventId) => !eventIds.includes(eventId));
+      for (const eventId of newEventIds) {
+          var currentSubscribers = await admin
+            .firestore()
+            .collection("eventsCollection")
+            .doc(eventId)
+            .get().then((doc) => {
+              if (doc.exists) {
+                var participants = doc.data().participants;
+                participants.push(userId);
+                console.log("participants", participants);
+                admin
+                  .firestore()
+                  .collection("eventsCollection")
+                  .doc(eventId)
+                  .update({
+                    // @ts-ignore
+                    participants: participants,
+                  });
+              } else {
+                console.log("No such document!");
+                return 0;
+              }
+            });
+        
+      }
+      for (const eventId of removedEventIds) {
+        var currentSubscribers = await admin
           .firestore()
-          .collection("clubsCollection")
-          .doc(clubId)
-          .update({
-            subscribers: admin.firestore.FieldValue.increment(-1),
+          .collection("eventsCollection")
+          .doc(eventId)
+          .get()
+          .then((doc) => {
+            if (doc.exists) {
+              var participants = doc.data().participants;
+              participants = participants.filter(
+                (participant) => participant !== userId
+              );
+              console.log("participants", participants);
+              admin
+                .firestore()
+                .collection("eventsCollection")
+                .doc(eventId)
+                .update({
+                  // @ts-ignore
+                  participants: participants,
+                });
+            } else {
+              console.log("No such document!");
+              return 0;
+            }
           });
       }
     }
   });
 
-exports.registerForEvent = functions.firestore
-	.document("users/{userId}")
-	.onUpdate(async (change, context) => {
-		const before = change.before.data();
-		const after = change.after.data();
 
-		if (before.participation !== after.participation) {
-			const userId = context.params.userId;
-			const eventIds = after.participation;
-
-			for (const eventId of eventIds) {
-				await admin
-					.firestore()
-					.collection("eventsCollection")
-					.doc(eventId)
-					.update({
-						participants: admin.firestore.FieldValue.arrayUnion(userId),
-					});
-			}
-		}
-	});
-
-exports.unregisterFromEvent = functions.firestore
-	.document("users/{userId}")
-	.onUpdate(async (change, context) => {
-		const before = change.before.data();
-		const after = change.after.data();
-
-		if (before.participation !== after.participation) {
-			const userId = context.params.userId;
-			const eventIds = before.participation;
-
-			for (const eventId of eventIds) {
-				await admin
-					.firestore()
-					.collection("eventsCollection")
-					.doc(eventId)
-					.update({
-						participants: admin.firestore.FieldValue.arrayRemove(userId),
-					});
-			}
-		}
-	});
 
 // event database schema
 {
