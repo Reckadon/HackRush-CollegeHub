@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import { AuthProvider } from "./contexts/AuthContext";
+import { useAuth } from "./contexts/authUtils";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Events from "./pages/Events";
@@ -17,7 +18,7 @@ const PrivateRoute = ({ children }) => {
 	}
 
 	return children;
-}
+};
 
 const App = () => {
 	return (
@@ -75,6 +76,6 @@ const App = () => {
 			</AuthProvider>
 		</Router>
 	);
-}
+};
 
 export default App;

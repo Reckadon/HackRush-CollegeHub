@@ -1,5 +1,5 @@
 import React from "react";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "../../contexts/authUtils";
 import { db } from "../../firebase/config";
 import { doc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 import "./EventCard.css";

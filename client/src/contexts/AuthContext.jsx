@@ -1,15 +1,11 @@
-import React, { createContext, useState, useEffect, useContext } from "react";
+import React, {  useState, useEffect } from "react";
 import { auth, db } from "../firebase/config";
 import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
+import { AuthContext } from "./authUtils";
 
-const AuthContext = createContext();
 
-export function useAuth() {
-	return useContext(AuthContext);
-}
-
-export function AuthProvider({ children }) {
+export const AuthProvider = ({ children }) => {
 	const [currentUser, setCurrentUser] = useState(null);
 	const [userRoles, setUserRoles] = useState([]);
 	const [userClubs, setUserClubs] = useState([]);
