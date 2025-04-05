@@ -110,5 +110,20 @@ exports.newUser = functions.auth.user().onCreate(async (user) => {
   //   members: ["user1", "user2"],
   //   subscribers: 100,
   //   clubPhoto: "club photo url",
+  //   filters: ["tech"],
+  // }
+}
+
+// notice board database schema
+{
+  // noticeBoardCollection
+  // {
+  //   noticeId: "notice id",
+  //   title: "notice title",
+  //   description: "notice description",
+  //   date: "notice date",
+  //   time: "notice time",
+  //   filters: [],
+  //   postedBy: "user id",
   // }
 }
