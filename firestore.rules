@@ -7,7 +7,7 @@ service cloud.firestore {
           allow read: if Signedin() && request.auth.uid == userId;  
         }
     }
-    match /clubs/{clubId} {
+    match /clubsCollection/{clubId} {
       allow read: if Signedin();
       allow write: if Signedin() && (IsAdmin() || checkClubAdmin(resource.data.name));
       allow create: if Signedin() && (IsAdmin() || checkClubAdmin(resource.data.name));
@@ -15,7 +15,7 @@ service cloud.firestore {
       allow delete: if Signedin() && (IsAdmin() || checkClubAdmin(resource.data.name));
     }
 
-    match /events/{eventId} {
+    match /eventsCollection/{eventId} {
       allow read: if Signedin() && resource.data.isApproved == true;
       allow write: if Signedin() && IsAdmin();
       allow create: if Signedin() && (IsAdmin() || checkClubAdmin(resource.data.clubAffiliation[0]));
