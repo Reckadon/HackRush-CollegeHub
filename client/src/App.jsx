@@ -8,6 +8,7 @@ import Events from "./pages/Events";
 import Clubs from "./pages/Clubs";
 import NoticeBoard from "./pages/NoticeBoard";
 import Navbar from "./components/Navbar";
+import Profile from "./pages/Profile";
 
 // Protected route component
 const PrivateRoute = ({ children }) => {
@@ -67,6 +68,17 @@ const App = () => {
 									<>
 										<Navbar />
 										<NoticeBoard />
+									</>
+								</PrivateRoute>
+							}
+						/>
+						<Route
+							path="/profile"
+							element={
+								<PrivateRoute>
+									<>
+										<Navbar />
+										<Profile />
 									</>
 								</PrivateRoute>
 							}

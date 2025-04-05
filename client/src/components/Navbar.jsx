@@ -91,19 +91,21 @@ const Navbar = () => {
 					</ul>
 				</div>
 
-				<div className="user-profile">
-					{currentUser?.photoURL ? (
-						<img
-							src={currentUser.photoURL}
-							alt={currentUser.displayName}
-							className="profile-pic"
-						/>
-					) : (
-						<div className="profile-initial">
-							{currentUser?.displayName?.charAt(0).toUpperCase()}
-						</div>
-					)}
-				</div>
+				<Link to="/profile" className="user-profile">
+					<div className="profile-icon">
+						{currentUser?.photoURL ? (
+							<img
+								src={currentUser.photoURL}
+								alt={currentUser.displayName}
+								className="profile-pic"
+							/>
+						) : (
+							<div className="profile-initial">
+								{currentUser?.displayName?.charAt(0).toUpperCase()}
+							</div>
+						)}
+					</div>
+				</Link>
 			</div>
 		</nav>
 	);
