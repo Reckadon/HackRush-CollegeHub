@@ -1,0 +1,60 @@
+.noticeboard-container {
+	padding: 20px;
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+.noticeboard-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+}
+
+.add-notice-btn {
+	background-color: var(--secondary-color);
+	color: white;
+	padding: 8px 16px;
+	border-radius: 4px;
+	font-size: 14px;
+}
+
+.add-notice-btn:hover {
+	background-color: #27ae60;
+}
+
+.filters {
+	margin-bottom: 20px;
+	padding: 15px;
+	background-color: var(--card-color);
+	border-radius: 8px;
+	box-shadow: var(--shadow);
+}
+
+.filters label {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.filters select {
+	padding: 8px;
+	border-radius: 4px;
+	border: 1px solid var(--border-color);
+	background-color: white;
+	min-width: 200px;
+}
+
+.notices-list {
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+
+@media (max-width: 768px) {
+	.noticeboard-header {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 10px;
+	}
+}
