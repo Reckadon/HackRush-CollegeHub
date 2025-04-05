@@ -5,6 +5,7 @@ service cloud.firestore {
     match /{document=**} {
        match /users/{userId} {
           allow read: if Signedin() && request.auth.uid == userId;  
+          allow update: if Signedin() && request.auth.uid == userId;
         }
     }
     match /clubsCollection/{clubId} {
