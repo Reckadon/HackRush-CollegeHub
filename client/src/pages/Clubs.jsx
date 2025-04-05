@@ -88,9 +88,11 @@ const Clubs = () => {
               <h2>{club.name}</h2>
               <p className="club-description">{club.description}</p>
               <p className="club-members">
+                {club.subscribers || 0} subscribers
+              </p>
+              <p className="club-members">
                 {club.members?.length || 0} members
               </p>
-
               <button
                 className={`subscribe-btn ${
                   club.isSubscribed ? "subscribed" : ""

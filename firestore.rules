@@ -17,7 +17,7 @@ service cloud.firestore {
     }
 
     match /eventsCollection/{eventId} {
-      allow read: if Signedin() && resource.data.isApproved == true;
+      allow read: if (Signedin() && resource.data.isApproved == true) || IsAdmin();
       allow write: if Signedin() && IsAdmin();
       allow create: if Signedin() && (IsAdmin() || checkClubAdmin(request.resource.data.clubAffiliation[0]) || checkClubAccount(request.resource.data.clubAffiliation[0]));
       allow update: if Signedin() && (IsAdmin());
