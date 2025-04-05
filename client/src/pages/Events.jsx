@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/authUtils";
 import { db } from "../firebase/config";
 import { collection, query, where, getDocs, addDoc, Timestamp, orderBy } from "firebase/firestore";
 import EventCard from "../components/Events/EventCard";

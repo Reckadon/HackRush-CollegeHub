@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/authUtils";
 import "./Login.css";
 
 const Login = () => {
@@ -9,7 +9,15 @@ const Login = () => {
 
 	useEffect(() => {
 		if (currentUser) {
-			navigate("/");
+			// Check if the email domain is IITGN
+			const domain = currentUser.email.split("@")[1];
+			if (domain === "iitgn.ac.in") {
+				// User is logged in with IITGN email
+				navigate("/");
+			} else {
+				// User is logged in but not with IITGN email
+				alert("Please log in with your IITGN email address.");
+			}
 		}
 	}, [currentUser, navigate]);
 
