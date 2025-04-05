@@ -10,18 +10,18 @@ service cloud.firestore {
     }
     match /clubsCollection/{clubId} {
       allow read: if Signedin();
-      allow write: if Signedin() && (IsAdmin() || checkClubAdmin(resource.data.name));
-      allow create: if Signedin() && (IsAdmin() || checkClubAdmin(resource.data.name));
-      allow update: if Signedin() && (IsAdmin() || checkClubAdmin(resource.data.name));
-      allow delete: if Signedin() && (IsAdmin() || checkClubAdmin(resource.data.name));
+      allow write: if Signedin() && (IsAdmin() || checkClubAdmin(request.resource.data.name));
+      allow create: if Signedin() && (IsAdmin() || checkClubAdmin(request.resource.data.name));
+      allow update: if Signedin() && (IsAdmin() || checkClubAdmin(request.resource.data.name));
+      allow delete: if Signedin() && (IsAdmin() || checkClubAdmin(request.resource.data.name));
     }
 
     match /eventsCollection/{eventId} {
       allow read: if Signedin() && resource.data.isApproved == true;
       allow write: if Signedin() && IsAdmin();
-      allow create: if Signedin() && (IsAdmin() || checkClubAdmin(resource.data.clubAffiliation[0]));
+      allow create: if Signedin() && (IsAdmin() || checkClubAdmin(request.resource.data.clubAffiliation[0]) || checkClubAccount(request.resource.data.clubAffiliation[0]));
       allow update: if Signedin() && (IsAdmin());
-      allow delete: if Signedin() && (IsAdmin() || checkClubAdmin(resource.data.clubAffiliation[0]));
+      allow delete: if Signedin() && (IsAdmin() || checkClubAdmin(request.resource.data.clubAffiliation[0]) || checkClubAccount(request.resource.data.clubAffiliation[0]));
     }
 
 
@@ -33,8 +33,13 @@ service cloud.firestore {
       allow delete: if Signedin() && (IsAdmin());
     }
     
+
+    function checkClubAccount(clubName){
+      return Signedin() &&  get(/databases/$(database)/documents/users/$(request.auth.uid)).data.roles[0] == clubName;
+    }
+
     function checkClubAdmin(clubName){
-      return Signedin() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.roles[0].split('-')[1] == 'cordinator' && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.roles[0].split('-')[0] == clubName;
+      return Signedin() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.roles[0].split('-')[1] == 'coordinator' && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.roles[0].split('-')[0] == clubName;
     }
 
     function IsAdmin(){
