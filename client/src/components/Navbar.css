@@ -1,6 +1,6 @@
 .navbar {
-  background-color: var(--card-color);
-  box-shadow: var(--shadow);
+  background-color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -14,10 +14,11 @@
   height: 60px;
   max-width: 1200px;
   margin: 0 auto;
+  position: relative;
 }
 
 .navbar-logo {
-  color: var(--primary-color);
+  color: #3498db;
   font-size: 24px;
   font-weight: bold;
   text-decoration: none;
@@ -31,7 +32,13 @@
 
 .nav-menu {
   display: flex;
+}
+
+.nav-menu ul {
+  display: flex;
   list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .nav-item {
@@ -39,7 +46,7 @@
 }
 
 .nav-link {
-  color: var(--text-color);
+  color: #333;
   text-decoration: none;
   padding: 8px 12px;
   border-radius: 4px;
@@ -51,19 +58,22 @@
 }
 
 .nav-link.active {
-  color: var(--primary-color);
+  color: #3498db;
   font-weight: 500;
 }
 
 .logout-btn {
   background-color: transparent;
-  color: var(--text-color);
-  border: 1px solid var(--border-color);
+  color: #333;
+  border: 1px solid #e0e0e0;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 .logout-btn:hover {
   background-color: rgba(231, 76, 60, 0.1);
-  color: var(--accent-color);
+  color: #e74c3c;
 }
 
 .user-profile {
@@ -82,7 +92,7 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background-color: var(--primary-color);
+  background-color: #3498db;
   color: white;
   display: flex;
   justify-content: center;
@@ -93,6 +103,7 @@
 @media screen and (max-width: 768px) {
   .menu-icon {
     display: block;
+    z-index: 10;
   }
 
   .nav-menu {
@@ -102,10 +113,12 @@
     position: absolute;
     top: 60px;
     left: -100%;
-    opacity: 1;
+    opacity: 0;
     transition: all 0.5s ease;
-    background-color: var(--card-color);
-    box-shadow: var(--shadow);
+    background-color: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    height: auto;
+    overflow: hidden;
   }
 
   .nav-menu.active {
@@ -115,17 +128,29 @@
     z-index: 1;
   }
 
+  .nav-menu ul {
+    flex-direction: column;
+    width: 100%;
+  }
+
   .nav-item {
     margin: 0;
-    padding: 15px 20px;
+    padding: 0;
     width: 100%;
     text-align: center;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid #e0e0e0;
   }
 
   .nav-link {
     width: 100%;
     display: block;
-    padding: 8px 0;
+    padding: 15px 0;
+  }
+  
+  .logout-btn {
+    width: 100%;
+    margin: 15px 0;
+    border: none;
+    border-radius: 0;
   }
 }
