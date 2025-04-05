@@ -27,6 +27,7 @@ exports.newUser = functions.auth.user().onCreate(async (user) => {
           clubAffiliation: [], // subscriptions to clubs
           intrests: [], // intrests of the user if using that
           saved: [],
+          participation: [], // always leave this empty
         });
     }
     if (officialClubsEmailList.includes(user.email)) {
@@ -42,6 +43,7 @@ exports.newUser = functions.auth.user().onCreate(async (user) => {
           clubAffiliation: [], // subscriptions to other clubs
           intrests: [], // intrests of the user if using that
           saved: [],
+          participation: [], // always leave this empty
         });
     }
     if (officialEmails.includes(user.email)) {
@@ -57,6 +59,7 @@ exports.newUser = functions.auth.user().onCreate(async (user) => {
           clubAffiliation: [], // subscriptions to clubs
           intrests: [], // intrests of the user if using that
           saved: [],
+          participation: [], // always leave this empty
         });
     }
 
