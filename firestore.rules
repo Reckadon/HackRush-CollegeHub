@@ -24,6 +24,15 @@ service cloud.firestore {
       allow delete: if Signedin() && (IsAdmin() || checkClubAdmin(resource.data.clubAffiliation[0]));
     }
 
+
+      match /noticesCollection/{noticeId} {
+      allow read: if Signedin()
+      allow write: if Signedin() && IsAdmin();
+      allow create: if Signedin() && (IsAdmin());
+      allow update: if Signedin() && (IsAdmin());
+      allow delete: if Signedin() && (IsAdmin());
+    }
+    
     function checkClubAdmin(clubName){
       return Signedin() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.roles[0].split('-')[1] == 'cordinator' && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.roles[0].split('-')[0] == clubName;
     }
