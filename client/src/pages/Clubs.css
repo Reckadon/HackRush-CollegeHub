@@ -1,0 +1,47 @@
+.club-content h2 {
+  font-size: 18px;
+  margin-bottom: 8px;
+  color: var(--text-color);
+}
+
+.club-description {
+  font-size: 14px;
+  margin-bottom: 15px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.club-members {
+  font-size: 14px;
+  color: var(--text-light);
+  margin-bottom: 15px;
+}
+
+.subscribe-btn {
+  width: 100%;
+  background-color: var(--primary-color);
+  color: white;
+  padding: 8px 0;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.subscribe-btn:hover {
+  background-color: #2980b9;
+}
+
+.subscribe-btn.subscribed {
+  background-color: var(--secondary-color);
+}
+
+.subscribe-btn.subscribed:hover {
+  background-color: #27ae60;
+}
+
+@media (max-width: 768px) {
+  .clubs-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,74 @@
+.dashboard-container {
+	padding: 20px;
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+.dashboard-container h1 {
+	margin-bottom: 5px;
+}
+
+.dashboard-container p {
+	color: var(--text-light);
+	margin-bottom: 20px;
+}
+
+.dashboard-section {
+	margin-bottom: 30px;
+	background-color: var(--card-color);
+	border-radius: 8px;
+	padding: 20px;
+	box-shadow: var(--shadow);
+}
+
+.dashboard-section h2 {
+	margin-bottom: 15px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid var(--border-color);
+}
+
+.events-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+	gap: 20px;
+}
+
+.notices-list {
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+
+.clubs-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+	gap: 20px;
+}
+
+.club-card {
+	background-color: #f9f9f9;
+	border-radius: 6px;
+	padding: 15px;
+	transition: transform 0.3s ease;
+}
+
+.club-card:hover {
+	transform: translateY(-5px);
+}
+
+.club-card h3 {
+	color: var(--primary-color);
+	margin-bottom: 8px;
+}
+
+.club-card p {
+	font-size: 14px;
+	color: var(--text-light);
+}
+
+@media (max-width: 768px) {
+	.events-grid,
+	.clubs-grid {
+		grid-template-columns: 1fr;
+	}
+}

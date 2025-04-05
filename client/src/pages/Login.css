@@ -1,0 +1,54 @@
+.login-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 100vh;
+	background-color: var(--background-color);
+}
+
+.login-card {
+	background-color: var(--card-color);
+	border-radius: 8px;
+	box-shadow: var(--shadow);
+	padding: 40px;
+	width: 100%;
+	max-width: 400px;
+	text-align: center;
+}
+
+.login-card h1 {
+	color: var(--primary-color);
+	margin-bottom: 10px;
+}
+
+.login-card p {
+	color: var(--text-light);
+	margin-bottom: 30px;
+}
+
+.google-login-btn {
+	background-color: #4285f4;
+	color: white;
+	padding: 12px 24px;
+	border-radius: 4px;
+	font-size: 16px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 0 auto;
+	transition: background-color 0.3s ease;
+}
+
+.google-login-btn:hover {
+	background-color: #3367d6;
+}
+
+.google-login-btn::before {
+	content: "";
+	background-image: url("https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg");
+	background-size: contain;
+	background-repeat: no-repeat;
+	width: 18px;
+	height: 18px;
+	margin-right: 10px;
+}
