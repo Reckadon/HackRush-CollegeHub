@@ -67,7 +67,7 @@ exports.newUser = functions.auth.user().onCreate(async (user) => {
       email: user.email,
       displayName: user.displayName,
       uid: user.uid,
-      roles: [], // student, admin, club-cordi, club-member, club-generalmember, etc.
+      roles: ['student'], // student, admin, club-cordi, club-member, club-generalmember, etc.
       clubAffiliation: [], // subscriptions to clubs
       intrests: [], // intrests of the user if using that
       participation: [], // events participating in
@@ -78,6 +78,98 @@ exports.newUser = functions.auth.user().onCreate(async (user) => {
     console.log(`Deleted user ${user.uid} with email ${user.email}`);
   }
 });
+
+
+exports.subscribeToClub = functions.firestore
+  .document("users/{userId}")
+  .onUpdate(async (change, context) => {
+    const before = change.before.data();
+    const after = change.after.data();
+
+    if (before.clubAffiliation !== after.clubAffiliation) {
+      const userId = context.params.userId;
+      const clubIds = after.clubAffiliation;
+
+      for (const clubId of clubIds) {
+        await admin
+          .firestore()
+          .collection("clubsCollection")
+          .doc(clubId)
+          .update({
+            subscribers: admin.firestore.FieldValue.increment(1),
+          });
+      }
+    }
+  });
+
+
+exports.unsubscribeFromClub = functions.firestore
+  .document("users/{userId}")
+  .onUpdate(async (change, context) => {
+    const before = change.before.data();
+    const after = change.after.data();
+
+    if (before.clubAffiliation !== after.clubAffiliation) {
+      const userId = context.params.userId;
+      const clubIds = before.clubAffiliation;
+
+      for (const clubId of clubIds) {
+        await admin
+          .firestore()
+          .collection("clubsCollection")
+          .doc(clubId)
+          .update({
+            subscribers: admin.firestore.FieldValue.increment(-1),
+          });
+      }
+    }
+  });
+
+
+exports.registerForEvent = functions.firestore
+  .document("users/{userId}")
+  .onUpdate(async (change, context) => {
+    const before = change.before.data();
+    const after = change.after.data();
+
+    if (before.participation !== after.participation) {
+      const userId = context.params.userId;
+      const eventIds = after.participation;
+
+      for (const eventId of eventIds) {
+        await admin
+          .firestore()
+          .collection("eventsCollection")
+          .doc(eventId)
+          .update({
+            participants: admin.firestore.FieldValue.arrayUnion(userId),
+          });
+      }
+    }
+  });
+
+exports.unregisterFromEvent = functions.firestore
+  .document("users/{userId}")
+  .onUpdate(async (change, context) => {
+    const before = change.before.data();
+    const after = change.after.data();
+
+    if (before.participation !== after.participation) {
+      const userId = context.params.userId;
+      const eventIds = before.participation;
+
+      for (const eventId of eventIds) {
+        await admin
+          .firestore()
+          .collection("eventsCollection")
+          .doc(eventId)
+          .update({
+            participants: admin.firestore.FieldValue.arrayRemove(userId),
+          });
+      }
+    }
+  });
+
 
 // event database schema
 {
@@ -123,6 +215,20 @@ exports.newUser = functions.auth.user().onCreate(async (user) => {
   //   description: "notice description",
   //   date: "notice date",
   //   time: "notice time",
+  //   filters: [],
+  //   postedBy: "user id",
+  // }
+}
+
+// notification database schema
+{
+  // notificationsCollection
+  // {
+  //   notificationId: "notification id",
+  //   title: "notification title",
+  //   description: "notification description",
+  //   date: "notification date",
+  //   time: "notification time",
   //   filters: [],
   //   postedBy: "user id",
   // }
