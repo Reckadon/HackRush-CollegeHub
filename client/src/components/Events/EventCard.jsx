@@ -19,25 +19,14 @@ const EventCard = ({ event }) => {
 
 	const handleRegister = async () => {
 		try {
-			const eventRef = doc(db, "eventsCollection", event.id);
 			const userRef = doc(db, "users", currentUser.uid);
 
 			if (isRegistered) {
-				// Remove user from event participants
-				await updateDoc(eventRef, {
-					participants: arrayRemove(currentUser.uid),
-				});
-
 				// Remove event from user's participation list
 				await updateDoc(userRef, {
 					participation: arrayRemove(event.id),
 				});
 			} else {
-				// Add user to event participants
-				await updateDoc(eventRef, {
-					participants: arrayUnion(currentUser.uid),
-				});
-
 				// Add event to user's participation list
 				await updateDoc(userRef, {
 					participation: arrayUnion(event.id),
