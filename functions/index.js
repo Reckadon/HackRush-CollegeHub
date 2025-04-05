@@ -63,22 +63,25 @@ exports.newUser = functions.auth.user().onCreate(async (user) => {
         });
     }
 
-    admin.firestore().collection("users").doc(user.uid).set({
-      email: user.email,
-      displayName: user.displayName,
-      uid: user.uid,
-      roles: ['student'], // student, admin, club-cordi, club-member, club-generalmember, etc.
-      clubAffiliation: [], // subscriptions to clubs
-      intrests: [], // intrests of the user if using that
-      participation: [], // events participating in
-      saved: [],
-    });
+    admin
+      .firestore()
+      .collection("users")
+      .doc(user.uid)
+      .set({
+        email: user.email,
+        displayName: user.displayName,
+        uid: user.uid,
+        roles: ["student"], // student, admin, club-cordi, club-member, club-generalmember, etc.
+        clubAffiliation: [], // subscriptions to clubs
+        intrests: [], // intrests of the user if using that
+        participation: [], // events participating in
+        saved: [],
+      });
   } else {
     await admin.auth().deleteUser(user.uid);
     console.log(`Deleted user ${user.uid} with email ${user.email}`);
   }
 });
-
 
 exports.subscribeToClub = functions.firestore
   .document("users/{userId}")
@@ -91,17 +94,29 @@ exports.subscribeToClub = functions.firestore
       const clubIds = after.clubAffiliation;
 
       for (const clubId of clubIds) {
-        await admin
+        var currentSubscribers = await admin
           .firestore()
           .collection("clubsCollection")
           .doc(clubId)
-          .update({
-            subscribers: admin.firestore.FieldValue.increment(1),
+          .get()
+          .then((doc) => {
+            if (doc.exists) {
+              admin
+                .firestore()
+                .collection("clubsCollection")
+                .doc(clubId)
+                .update({
+                  // @ts-ignore
+                  subscribers: doc.data().subscribers + 1,
+                });
+            } else {
+              console.log("No such document!");
+              return 0;
+            }
           });
       }
     }
   });
-
 
 exports.unsubscribeFromClub = functions.firestore
   .document("users/{userId}")
@@ -110,21 +125,31 @@ exports.unsubscribeFromClub = functions.firestore
     const after = change.after.data();
 
     if (before.clubAffiliation !== after.clubAffiliation) {
-      const userId = context.params.userId;
-      const clubIds = before.clubAffiliation;
-
+      const clubIds = after.clubAffiliation;
       for (const clubId of clubIds) {
-        await admin
+        var currentSubscribers = await admin
           .firestore()
           .collection("clubsCollection")
           .doc(clubId)
-          .update({
-            subscribers: admin.firestore.FieldValue.increment(-1),
+          .get()
+          .then((doc) => {
+            if (doc.exists) {
+              admin
+                .firestore()
+                .collection("clubsCollection")
+                .doc(clubId)
+                .update({
+                  // @ts-ignore
+                  subscribers: doc.data().subscribers - 1,
+                });
+            } else {
+              console.log("No such document!");
+              return 0;
+            }
           });
       }
     }
   });
-
 
 exports.registerForEvent = functions.firestore
   .document("users/{userId}")
@@ -169,7 +194,6 @@ exports.unregisterFromEvent = functions.firestore
       }
     }
   });
-
 
 // event database schema
 {
