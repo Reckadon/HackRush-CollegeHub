@@ -30,6 +30,9 @@ const Dashboard = () => {
 				const eventsData = eventsSnapshot.docs.map(doc => ({
 					id: doc.id,
 					...doc.data(),
+					date: doc.data().date.toDate
+						? doc.data().date.toDate()
+						: new Date(doc.data().date),
 				}));
 				setUpcomingEvents(eventsData);
 

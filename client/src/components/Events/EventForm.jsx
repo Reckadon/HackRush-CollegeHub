@@ -29,7 +29,7 @@ const EventForm = ({ onSubmit, userRoles }) => {
 
 				// Pre-select clubs based on user roles
 				const userClubs = clubsData.filter(club => userRoles.includes(club.clubId));
-				setSelectedClubs(userClubs.map(club => club.clubId));
+				setSelectedClubs(userClubs.map(club => club.name));
 			} catch (error) {
 				console.error("Error fetching clubs:", error);
 			}
@@ -46,11 +46,11 @@ const EventForm = ({ onSubmit, userRoles }) => {
 		}
 	};
 
-	const handleClubToggle = clubId => {
-		if (selectedClubs.includes(clubId)) {
-			setSelectedClubs(selectedClubs.filter(c => c !== clubId));
+	const handleClubToggle = clubName => {
+		if (selectedClubs.includes(clubName)) {
+			setSelectedClubs(selectedClubs.filter(c => c !== clubName));
 		} else {
-			setSelectedClubs([...selectedClubs, clubId]);
+			setSelectedClubs([...selectedClubs, clubName]);
 		}
 	};
 
@@ -165,9 +165,9 @@ const EventForm = ({ onSubmit, userRoles }) => {
 							<input
 								type="checkbox"
 								id={`club-${club.clubId}`}
-								checked={selectedClubs.includes(club.clubId)}
-								onChange={() => handleClubToggle(club.clubId)}
-								disabled={userRoles.includes(club.clubId)} // Disable if user is coordinator
+								checked={selectedClubs.includes(club.name)}
+								onChange={() => handleClubToggle(club.name)}
+								disabled={userRoles.includes(club.name)} // Disable if user is coordinator
 							/>
 							<label htmlFor={`club-${club.clubId}`}>{club.name}</label>
 						</div>

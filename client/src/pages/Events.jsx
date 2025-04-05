@@ -66,6 +66,7 @@ const Events = () => {
 	}, [selectedFilter, events]);
 
 	const handleAddEvent = async eventData => {
+		console.log(Timestamp.fromDate(new Date(eventData.date)));
 		try {
 			const newEvent = {
 				title: eventData.title,

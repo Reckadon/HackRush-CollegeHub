@@ -43,8 +43,12 @@ const EventCard = ({ event }) => {
 
 	const addToCalendar = () => {
 		const eventDate = new Date(event.date);
+		const eventTime = event.time.split(":");
+		eventDate.setHours(eventTime[0], eventTime[1], 0, 0); // Set event time
 		const endDate = new Date(eventDate);
+
 		endDate.setHours(endDate.getHours() + 2); // Default 2 hour duration
+		console.log(eventDate, endDate);
 
 		const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
 			event.title
@@ -66,6 +70,9 @@ const EventCard = ({ event }) => {
 			)}
 			<div className="event-content">
 				<h3>{event.title}</h3>
+				{event.clubAffiliation && (
+					<em className="event-club">Organized by: {event.clubAffiliation}</em>
+				)}
 				<p className="event-date">
 					{formatDate(event.date)} • {event.time}
 				</p>
@@ -96,6 +103,6 @@ const EventCard = ({ event }) => {
 			</div>
 		</div>
 	);
-}
+};
 
 export default EventCard;
