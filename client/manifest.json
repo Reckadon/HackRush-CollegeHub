@@ -1,0 +1,16 @@
+{
+	"name": "CollegeHub",
+	"short_name": "CollegeHub",
+	"description": "IITGN's Centralized Campus Communication Platform",
+	"start_url": "/",
+	"display": "standalone",
+	"background_color": "#ffffff",
+	"theme_color": "#3498db",
+	"icons": [
+		{
+			"src": "/icon-192-192.png",
+			"sizes": "192x192",
+			"type": "image/png"
+		}
+	]
+}
