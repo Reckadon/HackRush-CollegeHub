@@ -20,42 +20,38 @@ const Events = () => {
 		["blithchron", "amalthea", "metis"].includes(role)
 	);
 
-	useEffect(() => {
-		async function fetchEvents() {
-			try {
-				const now = new Date();
-				const eventsQuery = query(
-					collection(db, "eventsCollection"),
-					where("date", ">=", now),
-					where("isActive", "==", true),
-					where("isApproved", "==", true),
-					orderBy("date")
-				);
-				const eventsSnapshot = await getDocs(eventsQuery);
-				const eventsData = eventsSnapshot.docs.map(doc => ({
-					id: doc.id,
-					...doc.data(),
-					date: doc.data().date.toDate
-						? doc.data().date.toDate()
-						: new Date(doc.data().date),
-				}));
+	const fetchEvents = async () => {
+		try {
+			const now = new Date();
+			const eventsQuery = query(
+				collection(db, "eventsCollection"),
+				where("date", ">=", now),
+				where("isActive", "==", true),
+				where("isApproved", "==", true),
+				orderBy("date")
+			);
+			const eventsSnapshot = await getDocs(eventsQuery);
+			const eventsData = eventsSnapshot.docs.map(doc => ({
+				id: doc.id,
+				...doc.data(),
+				date: doc.data().date.toDate ? doc.data().date.toDate() : new Date(doc.data().date),
+			}));
 
-				setEvents(eventsData);
-				setFilteredEvents(eventsData);
+			setEvents(eventsData);
+			setFilteredEvents(eventsData);
 
-				// Extract unique filters
-				const uniqueFilters = [
-					...new Set(eventsData.flatMap(event => event.filters || [])),
-				];
-				setFilters(uniqueFilters);
+			// Extract unique filters
+			const uniqueFilters = [...new Set(eventsData.flatMap(event => event.filters || []))];
+			setFilters(uniqueFilters);
 
-				setLoading(false);
-			} catch (error) {
-				console.error("Error fetching events:", error);
-				setLoading(false);
-			}
+			setLoading(false);
+		} catch (error) {
+			console.error("Error fetching events:", error);
+			setLoading(false);
 		}
+	};
 
+	useEffect(() => {
 		fetchEvents();
 	}, []);
 
@@ -88,20 +84,11 @@ const Events = () => {
 			};
 
 			await addDoc(collection(db, "eventsCollection"), newEvent);
+			console.log("Event added successfully:", newEvent);
 
 			// Refresh events if admin (auto-approved)
 			if (isAdmin) {
-				const eventsQuery = query(collection(db, "eventsCollection"));
-				const eventsSnapshot = await getDocs(eventsQuery);
-				const eventsData = eventsSnapshot.docs.map(doc => ({
-					id: doc.id,
-					...doc.data(),
-					date: doc.data().date.toDate
-						? doc.data().date.toDate()
-						: new Date(doc.data().date),
-				}));
-
-				setEvents(eventsData);
+				fetchEvents();
 			}
 
 			setShowAddEventForm(false);
@@ -164,6 +151,6 @@ const Events = () => {
 			)}
 		</div>
 	);
-}
+};
 
 export default Events;

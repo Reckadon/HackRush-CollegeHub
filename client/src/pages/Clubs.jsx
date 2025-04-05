@@ -55,10 +55,6 @@ const Clubs = () => {
 				});
 			} else {
 				// Subscribe
-				await updateDoc(clubRef, {
-					members: arrayUnion(currentUser.uid),
-				});
-
 				await updateDoc(userRef, {
 					clubAffiliation: arrayUnion(clubId),
 				});
