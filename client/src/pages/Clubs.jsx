@@ -41,7 +41,6 @@ const Clubs = () => {
 
   const handleSubscribe = async (clubId, isSubscribed) => {
     try {
-      const clubRef = doc(db, "clubsCollection", clubId);
       const userRef = doc(db, "users", currentUser.uid);
 
       if (isSubscribed) {
