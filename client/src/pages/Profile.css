@@ -1,0 +1,171 @@
+.profile-container {
+	width: 45%;
+	max-width: 1200px;
+	margin: 20px auto;
+	background-color: var(--card-color);
+	border-radius: 8px;
+	box-shadow: var(--shadow);
+	overflow: hidden;
+}
+
+.profile-header {
+	display: flex;
+	align-items: center;
+	padding: 20px;
+	background-color: #f5f7fa;
+	position: relative;
+}
+
+.profile-avatar {
+	width: 100px;
+	height: 100px;
+	border-radius: 50%;
+	overflow: hidden;
+	margin-right: 20px;
+	border: 3px solid white;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-avatar img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.profile-initial-big {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: var(--primary-color);
+	color: white;
+	font-size: 36px;
+	font-weight: bold;
+}
+
+.profile-info {
+	flex: 1;
+}
+
+.profile-info h1 {
+	margin: 0 0 5px 0;
+	font-size: 24px;
+}
+
+.profile-email {
+	color: var(--text-light);
+	margin: 0 0 10px 0;
+}
+
+.profile-roles {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 5px;
+}
+
+.role-badge {
+	background-color: var(--primary-color);
+	color: white;
+	padding: 4px 8px;
+	border-radius: 4px;
+	font-size: 12px;
+}
+
+.edit-profile-btn,
+.save-profile-btn {
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	padding: 8px 16px;
+	border-radius: 4px;
+	font-size: 14px;
+	cursor: pointer;
+}
+
+.edit-profile-btn {
+	background-color: transparent;
+	border: 1px solid var(--primary-color);
+	color: var(--primary-color);
+}
+
+.save-profile-btn {
+	background-color: var(--primary-color);
+	border: none;
+	color: white;
+}
+
+.profile-body {
+	padding: 20px;
+}
+
+.profile-section {
+	margin-bottom: 30px;
+}
+
+.profile-section h2 {
+	margin-bottom: 15px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid var(--border-color);
+}
+
+.edit-name {
+	width: 100%;
+	padding: 8px;
+	font-size: 24px;
+	margin-bottom: 5px;
+	border: 1px solid var(--border-color);
+	border-radius: 4px;
+}
+
+.edit-bio {
+	width: 100%;
+	min-height: 100px;
+	padding: 10px;
+	border: 1px solid var(--border-color);
+	border-radius: 4px;
+	resize: vertical;
+}
+
+.clubs-list,
+.events-list {
+	list-style: none;
+	padding: 0;
+}
+
+.club-item,
+.event-item {
+	background-color: #f5f7fa;
+	padding: 10px 15px;
+	margin-bottom: 10px;
+	border-radius: 4px;
+	border-left: 3px solid var(--primary-color);
+}
+
+@media (max-width: 768px) {
+	.profile-container {
+		width: unset;
+		max-width: 100%;
+		margin: 10px;
+	}
+	.profile-header {
+		flex-direction: column;
+		text-align: center;
+	}
+
+	.profile-avatar {
+		margin-right: 0;
+		margin-bottom: 15px;
+	}
+
+	.edit-profile-btn,
+	.save-profile-btn {
+		position: static;
+		margin-top: 15px;
+		width: 100%;
+	}
+
+	.profile-roles {
+		justify-content: center;
+	}
+}

@@ -4,7 +4,7 @@ import { db } from "../../firebase/config";
 import { doc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 import "./EventCard.css";
 
-const EventCard = ({ event }) => {
+const EventCard = ({ event , isShort}) => {
 	const { currentUser } = useAuth();
 	const isRegistered = event.participants && event.participants.includes(currentUser.uid);
 
@@ -48,7 +48,6 @@ const EventCard = ({ event }) => {
 		const endDate = new Date(eventDate);
 
 		endDate.setHours(endDate.getHours() + 2); // Default 2 hour duration
-		console.log(eventDate, endDate);
 
 		const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
 			event.title
@@ -89,7 +88,7 @@ const EventCard = ({ event }) => {
 					</div>
 				)}
 
-				<div className="event-actions">
+				{!isShort && <div className="event-actions">
 					<button
 						className={`register-btn ${isRegistered ? "registered" : ""}`}
 						onClick={handleRegister}
@@ -99,7 +98,7 @@ const EventCard = ({ event }) => {
 					<button className="calendar-btn" onClick={addToCalendar}>
 						Add to Calendar
 					</button>
-				</div>
+				</div>}
 			</div>
 		</div>
 	);
