@@ -12,6 +12,7 @@ const NoticeBoard = () => {
 	const [filteredNotices, setFilteredNotices] = useState([]);
 	const [categories, setCategories] = useState([]);
 	const [selectedCategory, setSelectedCategory] = useState("all");
+	const [searchTerm, setSearchTerm] = useState("");
 	const [showAddNoticeForm, setShowAddNoticeForm] = useState(false);
 	const [loading, setLoading] = useState(true);
 
@@ -53,12 +54,26 @@ const NoticeBoard = () => {
 	}, []);
 
 	useEffect(() => {
-		if (selectedCategory === "all") {
-			setFilteredNotices(notices);
-		} else {
-			setFilteredNotices(notices.filter(notice => notice.category === selectedCategory));
+		// Filter notices based on both category and search term
+		let filtered = notices;
+
+		// Apply category filter
+		if (selectedCategory !== "all") {
+			filtered = filtered.filter(notice => notice.category === selectedCategory);
 		}
-	}, [selectedCategory, notices]);
+
+		// Apply search term filter
+		if (searchTerm.trim() !== "") {
+			const term = searchTerm.toLowerCase();
+			filtered = filtered.filter(
+				notice =>
+					notice.title.toLowerCase().includes(term) ||
+					notice.content.toLowerCase().includes(term)
+			);
+		}
+
+		setFilteredNotices(filtered);
+	}, [selectedCategory, searchTerm, notices]);
 
 	const handleAddNotice = async noticeData => {
 		try {
@@ -108,6 +123,14 @@ const NoticeBoard = () => {
 			</div>
 
 			<div className="filters">
+				<div className="search-field">
+					<input
+						type="text"
+						placeholder="Search notices..."
+						value={searchTerm}
+						onChange={e => setSearchTerm(e.target.value)}
+					/>
+				</div>
 				<label>
 					Filter by Category:
 					<select

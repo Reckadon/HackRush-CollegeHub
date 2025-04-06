@@ -17,6 +17,7 @@
 	padding: 8px 16px;
 	border-radius: 4px;
 	font-size: 14px;
+	margin-left: 20px;
 }
 
 .add-notice-btn:hover {
@@ -43,6 +44,16 @@
 	border: 1px solid var(--border-color);
 	background-color: white;
 	min-width: 200px;
+}
+
+.search-field input {
+	padding: 8px;
+	border-radius: 4px;
+	border: 1px solid var(--border-color);
+	background-color: white;
+	width: 100%;
+	max-width: 300px;
+	margin-bottom: 5px;
 }
 
 .notices-list {
